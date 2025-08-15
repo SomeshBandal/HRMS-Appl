@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,6 +78,8 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
           message= "No sufficient leaves for " + dto.getLeaveType().name() +
                     ", converted to unpaid leave.";
         }
+        Employee employee = employeeRepository.findById(dto.getEmployeeId())
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
 
         // Save leave request
         LeaveRequest request = new LeaveRequest();
@@ -84,6 +87,7 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
         request.setLeaveType(finalLeaveType);
         request.setNoOfDays(noOfDays);
         request.setStatus(status);
+        request.setEmployee(employee);
 
         LeaveRequest savedRequest = leaveRepository.save(request);
         return leaveMapper.toDto(savedRequest);
@@ -110,7 +114,11 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
         leaveRequest.setToDate(dto.getEndDate());
         leaveRequest.setReason(dto.getReason());
         leaveRequest.setStatus(LeaveStatus.APPROVED);
+        leaveRequest.setCreatedByHR(true);
 
+        int noOfDays = (int) ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate()) + 1;
+        leaveBalanceService.deductLeave(dto.getEmployeeId(), String.valueOf(dto.getLeaveType()),noOfDays);
+        leaveRequest.setNoOfDays(noOfDays);
         LeaveRequest savedLeave = leaveRepository.save(leaveRequest);
         return leaveMapper.toDto(savedLeave);
     }

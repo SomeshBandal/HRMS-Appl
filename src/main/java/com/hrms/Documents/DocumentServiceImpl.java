@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,38 +29,30 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     @Override
-    public void uploadDocument(MultipartFile file, DocumentDto documentDto) {
+    public void uploadDocument(MultipartFile file, DocumentDto documentDto) throws IOException {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File cannot be null or empty");
         }
 
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            Thumbnails.of(file.getInputStream())
-                    .size(500, 500)
-                    .outputFormat("jpg")
-                    .outputQuality(0.7)
-                    .toOutputStream(outputStream);
-
-            byte[] compressedImage = outputStream.toByteArray();
-
-            Employee employee = employeeRepository.findById(documentDto.getEmployeeId())
-                    .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
-
-            Document document = new Document();
-            document.setId(documentDto.getId());
-            document.setFileName(documentDto.getFileName());
-            document.setDocumentType(documentDto.getDocumentType());
-            document.setEmployee(employee);
-            document.setFileData(compressedImage);
-
-            documentRepository.save(document);
-
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to upload Document", e);
+        if (!"application/pdf".equalsIgnoreCase(file.getContentType())) {
+            throw new IllegalArgumentException("Only PDF files are allowed");
         }
 
+        byte[] fileData = file.getBytes();
+
+        Employee employee = employeeRepository.findById(documentDto.getEmployeeId())
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
+
+        Document document = new Document();
+        document.setId(documentDto.getId());
+        document.setFileName(documentDto.getFileName());
+        document.setDocumentType(documentDto.getDocumentType());
+        document.setEmployee(employee);
+        document.setFileData(fileData);
+
+        documentRepository.save(document);
     }
+
     @Override
     public List<DocumentResponseDto> getDocuments(Long employeeId) {
         List<DocumentDto> documents = documentRepository.findByEmployeeId(employeeId)
@@ -85,9 +78,8 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     @Override
-    public DocumentDto getDocumentById(Long documentId) {
-        return documentRepository.findById(documentId).map(documentMapper::toDto)
-                .orElseThrow(() -> new DocumentNotFoundException("Document not found with id: " + documentId));
+    public Document downloadDocumentById(Long documentId) {
+        return documentRepository.findById(documentId).orElseThrow(() -> new DocumentNotFoundException("Document not found"));
     }
 
 

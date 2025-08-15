@@ -23,7 +23,7 @@ public class LeaveRequestController {
     private final LeaveRequestService leaveRequestService;
 
     @PreAuthorize("hasRole('EMPLOYEE')")
-    @Operation(summary = "Apply for Unpaid Leave", description = "Allows an employee to raise a request for unpaid leave")
+    @Operation(summary = "Apply for Leave", description = "Allows an employee to raise a request for leave")
     @PostMapping("/apply")
     public ResponseEntity<ApiResponse<LeaveRequestDto>> applyForLeave(
             @Parameter(description = "leave request details required", required = true)

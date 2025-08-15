@@ -57,6 +57,7 @@ public class JwtServiceImpl implements JwtService{
                 .builder()
                 .setSubject(customUserDetails.getUsername())
                 .setId(UUID.randomUUID().toString())
+                .claim("employeeId",customUserDetails.getEmployee().getId())
                 .claim("roles", roles)
                 .claim("isEnabled", customUserDetails.isEnabled())
                 .setIssuedAt(Date.from(Instant.now()))

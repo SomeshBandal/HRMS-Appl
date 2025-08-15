@@ -19,10 +19,8 @@ public class LeaveRequestDto {
     private LocalDate fromDate;
     private LocalDate toDate;
     private String reason;
-    private int noOfDays;
     private LeaveType leaveType; // PAID or UNPAID
     private LeaveStatus status;  // PENDING, APPROVED, REJECTED
-
     private String employeeName;
     private Long employeeId;
 }

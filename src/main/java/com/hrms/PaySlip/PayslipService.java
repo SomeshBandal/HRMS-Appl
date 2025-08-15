@@ -11,7 +11,7 @@ public interface PayslipService {
 
     public PayslipDto generatePayslip(PayslipDto payslipDto, Long employeeId, MultipartFile file) throws IOException;
     public List<PayslipDto> getAllPayslips(Long employeeID);
-    public List<PayslipResponseDto> getAllPayslipsWithDownloadLinks(Long employeeId,String baseUrl);
+    public List<PayslipResponseDto> getAllPayslipsWithDownloadLinks(Long employeeId, String baseUrl);
 
     Payslip getPayslipById(Long payslipId);
 }

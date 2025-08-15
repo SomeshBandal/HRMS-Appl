@@ -1,13 +1,13 @@
 package com.hrms.PaySlip;
 
-import com.hrms.Employee.EmployeeDto;
 import com.hrms.Employee.EmployeeNotFoundException;
 import com.hrms.Employee.EmployeeService;
 import com.hrms.Entity.Payslip;
 import com.hrms.util.ApiResponse;
+import com.hrms.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
+import org.springframework.core.io.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -33,7 +33,7 @@ public class PayslipController {
     private final EmployeeService employeeService; // Needed to get employee by userDetails
 
     @PreAuthorize("hasRole('HR')")
-    @PostMapping("hr/payslip/generate")
+    @PostMapping("hr/payslip/generate/{employeeId}")
     @Operation(summary = "Generate Payslip",
                description = "HR uploads a payslip for an employee")
 
@@ -93,8 +93,8 @@ public class PayslipController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(HttpStatus.NOT_FOUND, "Payslips not found", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to fetch payslips", e.getMessage()));
-
         }
+
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
@@ -104,6 +104,12 @@ public class PayslipController {
     public ResponseEntity<Resource> downloadPayslip(@PathVariable Long payslipId) {
         Payslip payslip = payslipService.getPayslipById(payslipId);
 
+        Long loggedInEmployeeId = SecurityUtil.getLoggedInEmployeeId();
+        if (!payslip.getEmployee().getId().equals(loggedInEmployeeId)) {
+            throw new UnauthorizedPayslipAccessException("You cannot download another employee's payslip");
+        }
+
+        // 3️⃣ Wrap in Resource
         ByteArrayResource resource = new ByteArrayResource(payslip.getPayslipPdf());
 
         String fileName = "Payslip_" + payslip.getSalaryMonth() + "_" + payslip.getId() + ".pdf";
@@ -111,7 +117,7 @@ public class PayslipController {
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .body((Resource) resource);
+                .body(resource);
     }
 
 }
