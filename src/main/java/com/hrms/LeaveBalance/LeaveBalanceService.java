@@ -4,7 +4,7 @@ import java.util.List;
 public interface LeaveBalanceService {
 
     LeaveBalanceDto createLeaveBalance(Long employeeId, LeaveBalanceDto dto);
-    LeaveBalanceDto updateLeaveBalance(Long id, LeaveBalanceDto dto);
+    LeaveBalanceDto updateLeaveBalance(Long id, UpdateLeaveBalanceDto dto);
     List<LeaveBalanceDto> getLeaveBalanceById(Long employeeId);
     void deleteLeaveBalance(Long id);
     boolean hasSufficientLeave(Long employeeId, String leaveType, int requestedDays);

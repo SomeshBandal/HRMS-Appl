@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/leave-balances")
+@RequestMapping("/api/leaveBalance")
 @RequiredArgsConstructor
 public class LeaveBalanceController {
 
@@ -31,7 +31,7 @@ public class LeaveBalanceController {
         try {
             LeaveBalanceDto created = leaveBalanceService.createLeaveBalance(employeeId, dto);
             return ResponseEntity.ok()
-                    .body(ApiResponse.success("Leave balance created successfully", created));
+                    .body(ApiResponse.success("Leave balance created successfully"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().
                     body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to create leave balance", e.getMessage()));
@@ -43,11 +43,11 @@ public class LeaveBalanceController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<LeaveBalanceDto>> updateLeaveBalance(
             @PathVariable @Parameter(description = "LeaveBalance ID") Long id,
-            @RequestBody LeaveBalanceDto dto) {
+            @RequestBody UpdateLeaveBalanceDto dto) {
 
         try {
             LeaveBalanceDto updated = leaveBalanceService.updateLeaveBalance(id, dto);
-            return ResponseEntity.ok().body(ApiResponse.success("Leave balance updated successfully", updated));
+            return ResponseEntity.ok().body(ApiResponse.success("Leave balance updated successfully"));
         } catch (LeaveBalanceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponse.error(HttpStatus.NOT_FOUND, "Leave balance not found", e.getMessage()));
@@ -72,10 +72,10 @@ public class LeaveBalanceController {
     }
 
     @PreAuthorize("hasRole('HR')")
-    @Operation(summary = "Delete leave balance by EmployeeId")
-    @DeleteMapping("/{employeeId}")
+    @Operation(summary = "Delete leave balance by Leave balance id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteLeaveBalance(
-            @PathVariable @Parameter(description = "LeaveBalance ID") Long id) {
+            @PathVariable @Parameter(description = "LeaveBalance Id") Long id){
 
         leaveBalanceService.deleteLeaveBalance(id);
         return ResponseEntity.ok().body("Leave balance deleted successfully");

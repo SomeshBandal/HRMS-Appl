@@ -10,14 +10,12 @@ import com.hrms.Entity.LeaveRequest;
 import com.hrms.LeaveBalance.LeaveBalanceNotFoundException;
 import com.hrms.LeaveBalance.LeaveBalanceRepository;
 import com.hrms.LeaveBalance.LeaveBalanceServiceImpl;
-import com.hrms.util.ManualLeaveRequestDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

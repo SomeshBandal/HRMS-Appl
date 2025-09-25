@@ -1,12 +1,15 @@
 package com.hrms.Employee;
 
+import com.hrms.Entity.Enum.EmployeeStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-    @Data
+import static com.hrms.Entity.Enum.EmployeeStatus.ACTIVE;
+
+@Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
@@ -24,6 +27,9 @@ import java.util.List;
 
         @Schema(description = "Department of the employee", example = "Testing")
         private String department;
+
+        @Schema(description = "status of employee")
+        private EmployeeStatus status;
 
         @Schema(description = "Role of the employee (HR or EMPLOYEE)", example = "EMPLOYEE")
         private String role;

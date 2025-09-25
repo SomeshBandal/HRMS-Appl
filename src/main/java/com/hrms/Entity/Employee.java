@@ -1,5 +1,6 @@
 package com.hrms.Entity;
 
+import com.hrms.Entity.Enum.EmployeeStatus;
 import com.hrms.Entity.Enum.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,11 @@ public class Employee {
     private String department;
 
     @Enumerated(EnumType.STRING)
+    private EmployeeStatus status = EmployeeStatus.ACTIVE; //default active
+
+    @Enumerated(EnumType.STRING)
     private Role role; // HR or EMPLOYEE
+
     private LocalDate dateOfJoining;
     private String password; // store hashed
 

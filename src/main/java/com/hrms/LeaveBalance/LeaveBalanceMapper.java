@@ -15,7 +15,7 @@ public class LeaveBalanceMapper {
         LeaveBalanceDto dto = new LeaveBalanceDto();
 
         if (leaveBalance.getId() != null) {
-            dto.setEmployeeId(leaveBalance.getId());
+            dto.setId(leaveBalance.getId());
         }
         dto.setLeaveType(leaveBalance.getLeaveType());
         dto.setTotalLeaves(leaveBalance.getTotalLeaves());

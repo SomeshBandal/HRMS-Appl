@@ -5,11 +5,11 @@ import com.hrms.Entity.Employee;
 import com.hrms.Entity.Enum.LeaveType;
 import com.hrms.Entity.LeaveBalance;
 import com.hrms.Employee.EmployeeRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -32,7 +32,7 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
     }
 
     @Override
-    public LeaveBalanceDto updateLeaveBalance(Long id, LeaveBalanceDto dto) {
+    public LeaveBalanceDto updateLeaveBalance(Long id, UpdateLeaveBalanceDto dto) {
         LeaveBalance leaveBalance = leaveBalanceRepository.findById(id)
                 .orElseThrow(() -> new LeaveBalanceNotFoundException("Leave balance not found with ID: " + id));
 

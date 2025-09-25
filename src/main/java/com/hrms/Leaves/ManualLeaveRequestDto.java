@@ -1,6 +1,5 @@
-package com.hrms.util;
+package com.hrms.Leaves;
 
-import com.hrms.Entity.Enum.LeaveStatus;
 import com.hrms.Entity.Enum.LeaveType;
 import lombok.Data;
 

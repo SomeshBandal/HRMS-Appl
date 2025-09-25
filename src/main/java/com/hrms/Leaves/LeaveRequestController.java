@@ -2,7 +2,6 @@ package com.hrms.Leaves;
 
 import com.hrms.Employee.EmployeeNotFoundException;
 import com.hrms.util.ApiResponse;
-import com.hrms.util.ManualLeaveRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;

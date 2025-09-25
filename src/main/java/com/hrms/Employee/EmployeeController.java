@@ -61,7 +61,7 @@ public class EmployeeController {
     public ResponseEntity<ApiResponse<List<EmployeeDto>>> allEmployees() {
         try {
             List<EmployeeDto> allEmployees = employeeService.getAllEmployees();
-            return ResponseEntity.ok(ApiResponse.success("All employees fetched successfully", allEmployees));
+            return ResponseEntity.ok().body(ApiResponse.success("All employees fetched successfully", allEmployees));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to retrieve all Employees", e.getMessage()));
         }
@@ -107,23 +107,57 @@ public class EmployeeController {
     }
 
     @PreAuthorize("hasRole('HR')")
-    @DeleteMapping("/hr/employee/{id}")
-    @Operation(summary = "deleting an employee")
+    @PatchMapping("/hr/employee/deactivate/{id}")
+    @Operation(summary = "Deactivating an employee")
 
-    public ResponseEntity<ApiResponse<Void>>deleteEmployee(
+    public ResponseEntity<ApiResponse<Void>>deactivateEmployee(
             @Parameter(description = "employee id",required = true)
             @PathVariable Long id) {
 
         try {
-            employeeService.deleteEmployee(id);
-            return ResponseEntity.ok().body(ApiResponse.success("Employee deleted successfully"));
+            employeeService.deactivateEmployee(id);
+            return ResponseEntity.ok().body(ApiResponse.success("Employee deactivated successfully"));
         } catch (EmployeeNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(HttpStatus.NOT_FOUND, "Employee does not exist", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(HttpStatus.NOT_FOUND, "Employee does not exist with id ", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to delete Employee", e.getMessage()));
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to deactivate Employee", e.getMessage()));
         }
     }
 
+    @Operation(summary = "Activating an employee")
+    @PatchMapping("/hr/employee/activate/{id}")
+    @PreAuthorize("hasRole('HR')")
+    public ResponseEntity<ApiResponse<Void>>activateEmployee(
+            @Parameter(description = "Employee id", required = true)
+            @PathVariable Long id){
+
+        try{
+            employeeService.activateEmployee(id);
+            return ResponseEntity.ok().body(ApiResponse.success("Employee activated successfully"));
+        }catch (EmployeeNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(HttpStatus.NOT_FOUND,"Employee does not exist",e.getMessage()));
+        }catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(HttpStatus.BAD_REQUEST,"Failed to activate employee with id :" + id,e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Fetching all active employees")
+    @PreAuthorize("hasRole('HR')")
+    @GetMapping("/hr/employee/allActiveEmployees")
+    public ResponseEntity<ApiResponse<List<EmployeeDto>>>getAllActiveEmployees(){
+        try{
+            List<EmployeeDto> activeEmployees = employeeService.getActiveEmployees();
+            return ResponseEntity.ok()
+                    .body(ApiResponse.success("Active employees fetched successfully", activeEmployees));
+        }catch (Exception e){
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(HttpStatus.BAD_REQUEST,"Failed to fetch all activeEmployees", e.getMessage()));
+        }
+    }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @GetMapping("/employee/profile")

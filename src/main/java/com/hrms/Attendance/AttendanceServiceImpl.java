@@ -37,7 +37,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
-       return attendanceRepository.findByEmployeeAndMonth(employeeId, startDate, endDate)
+       return attendanceRepository.findByEmployeeIdAndMonth(employeeId, startDate, endDate)
                 .stream().map(attendanceMapper::toDto).toList();
 
     }

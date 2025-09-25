@@ -1,8 +1,6 @@
 package com.hrms.Leaves;
 
 
-import com.hrms.util.ManualLeaveRequestDto;
-
 import java.util.List;
 
 public interface LeaveRequestService {

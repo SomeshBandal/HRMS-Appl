@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class JwtServiceImpl implements JwtService{
-    private final String SECRET = "mysupersecretkeymysupersecretkey"; // use at least 256 bits!
-    private final long EXPIRATION = 36000 ; // 1 hour
+    private final String SECRET = "mysupersecretkeymysupersecretkey";
+    private final long EXPIRATION = 3600000 ;
 
 
     private Key getSigningKey() {

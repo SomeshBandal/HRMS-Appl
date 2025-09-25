@@ -38,7 +38,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/h2-console/**").permitAll() // Allow H2 Console access
                             .requestMatchers("/api/auth/login").permitAll()
-                            .requestMatchers("/api/documents/**").permitAll()
                             .anyRequest().authenticated()
                     )             // All other requests require auth
                     .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

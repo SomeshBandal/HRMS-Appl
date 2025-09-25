@@ -1,6 +1,7 @@
 package com.hrms.Employee;
 
 import com.hrms.Entity.Employee;
+import com.hrms.Entity.Enum.EmployeeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.hibernate.internal.util.collections.CollectionHelper.listOf;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -88,12 +91,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
-    @Override
-    public void deleteEmployee(Long id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new EmployeeNotFoundException("employee does not exist"));
+    public void deactivateEmployee(Long id){
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException("employee not found with id :" + id));
+        employee.setStatus(EmployeeStatus.INACTIVE);
+        employeeRepository.save(employee);
+    }
 
-        employeeRepository.delete(employee);
+    @Override
+    public void activateEmployee(Long id){
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException("employee not found with id :" + id));
+        employee.setStatus(EmployeeStatus.ACTIVE);
+        employeeRepository.save(employee);
+    }
+
+    @Override
+    public List<EmployeeDto> getActiveEmployees() {
+        return employeeRepository.findByStatus(EmployeeStatus.ACTIVE).stream().map(employeeMapper::toDto).toList();
+
     }
 
     @Override

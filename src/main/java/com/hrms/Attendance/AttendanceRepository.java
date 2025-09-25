@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     @Query("SELECT a FROM Attendance a WHERE a.employee.id = :employeeId AND a.date BETWEEN :startDate AND :endDate")
-    List<Attendance> findByEmployeeAndMonth(@Param("employeeId") Long employeeId,
+    List<Attendance> findByEmployeeIdAndMonth(@Param("employeeId") Long employeeId,
                                             @Param("startDate") LocalDate startDate,
                                             @Param("endDate") LocalDate endDate);
 
