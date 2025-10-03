@@ -20,7 +20,7 @@ public class AttendanceController {
 
     @PreAuthorize("hasRole('HR')")
     @PostMapping("/hr/attendance")
-    @Operation(summary = "saving attendance", description = "saving attendance of employees")
+    @Operation(summary = "saving attendance record", description = "saving attendance of employees")
 
     public ResponseEntity<ApiResponse<AttendanceDto>>saveAttendance(
             @Parameter(description = "Attendance details",required = true)
@@ -28,9 +28,11 @@ public class AttendanceController {
 
         try {
             AttendanceDto attendanceDto1 = attendanceService.saveAttendance(attendanceDto);
-            return ResponseEntity.ok().body(ApiResponse.success("Attendance saved successfully", attendanceDto1));
+            return ResponseEntity.ok()
+                    .body(ApiResponse.success("Record saved successfully", attendanceDto1));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to save attendance", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to save record", e.getMessage()));
         }
     }
 
@@ -45,26 +47,32 @@ public class AttendanceController {
 
         try{
             List<AttendanceDto> employeeMonthlyAttendance = attendanceService.getEmployeeMonthlyAttendance(employeeId, year, month);
-            return ResponseEntity.ok().body(ApiResponse.success("Monthly attendance of employee fetched successfully",employeeMonthlyAttendance));
+            return ResponseEntity.ok()
+                    .body(ApiResponse.success("Record fetched successfully",employeeMonthlyAttendance));
         }catch(AttendanceNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(HttpStatus.NOT_FOUND,"Monthly attendance not found", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(HttpStatus.NOT_FOUND,"Record not found", e.getMessage()));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST,"Failed to fetch monthly attendance", e.getMessage()));
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(HttpStatus.BAD_REQUEST,"Failed to fetch record", e.getMessage()));
         }
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @GetMapping("/employee/attendance")
-    @Operation(summary = "Getting attendance details", description = "getting own attendance details by employee")
+    @Operation(summary = "Getting attendance record", description = "getting own attendance record by employee")
 
     public ResponseEntity<ApiResponse<List<AttendanceDto>>>getOwnRecords(@RequestParam Long employeeId){
         try{
             List<AttendanceDto> attendance = attendanceService.getAttendance(employeeId);
-            return ResponseEntity.ok().body(ApiResponse.success("Fetched attendance successfully", attendance));
+            return ResponseEntity.ok()
+                    .body(ApiResponse.success("Fetched record successfully", attendance));
         }catch (AttendanceNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(HttpStatus.NOT_FOUND,"attendance not found", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(HttpStatus.NOT_FOUND,"Record not found", e.getMessage()));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST,"Failed to fetch attendance", e.getMessage()));
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(HttpStatus.BAD_REQUEST,"Failed to fetch record", e.getMessage()));
         }
     }
 }

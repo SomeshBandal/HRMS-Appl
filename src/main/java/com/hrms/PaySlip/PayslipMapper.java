@@ -20,10 +20,6 @@ public class PayslipMapper {
         PayslipDto dto = new PayslipDto();
         dto.setId(payslip.getId());
         dto.setSalaryMonth(payslip.getSalaryMonth());
-        dto.setNetSalary(payslip.getNetSalary());
-        dto.setBasic(payslip.getBasic());
-        dto.setHra(payslip.getHra());
-        dto.setDeduction(payslip.getDeduction());
         dto.setEmployeeId(payslip.getEmployee().getId());
         dto.setEmployeeName(payslip.getEmployee().getName());
 
@@ -39,10 +35,6 @@ public class PayslipMapper {
 
         payslip.setId(dto.getId());
         payslip.setSalaryMonth(dto.getSalaryMonth());
-        payslip.setNetSalary(dto.getNetSalary());
-        payslip.setBasic(dto.getBasic());
-        payslip.setHra(dto.getHra());
-        payslip.setDeduction(dto.getDeduction());
         payslip.setEmployee(employee);
 
 
@@ -66,10 +58,6 @@ public class PayslipMapper {
 
         dto.setId(payslip.getId());
         dto.setSalaryMonth(payslip.getSalaryMonth());
-        dto.setBasic(payslip.getBasic());
-        dto.setHra(payslip.getHra());
-        dto.setDeduction(payslip.getDeduction());
-        dto.setNetSalary(payslip.getNetSalary());
         dto.setDownloadUrl(baseUrl + "/employee/payslips/download/" + payslip.getId());
 
         return dto;

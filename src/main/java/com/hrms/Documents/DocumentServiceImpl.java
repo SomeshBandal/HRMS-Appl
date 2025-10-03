@@ -4,6 +4,7 @@ import com.hrms.Employee.EmployeeNotFoundException;
 import com.hrms.Employee.EmployeeRepository;
 import com.hrms.Entity.Document;
 import com.hrms.Entity.Employee;
+import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,16 +17,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DocumentServiceImpl implements DocumentService {
 
-    @Autowired
-    private DocumentRepository documentRepository;
 
-    @Autowired
-    private DocumentMapper documentMapper;
-
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final DocumentRepository documentRepository;
+    private final DocumentMapper documentMapper;
+    private final EmployeeRepository employeeRepository;
 
 
     @Override
@@ -35,7 +33,7 @@ public class DocumentServiceImpl implements DocumentService {
         }
 
         if (!"application/pdf".equalsIgnoreCase(file.getContentType())) {
-            throw new IllegalArgumentException("Only PDF files are allowed");
+            throw new IllegalArgumentException("Only PDF files allowed");
         }
 
         byte[] fileData = file.getBytes();
@@ -76,7 +74,6 @@ public class DocumentServiceImpl implements DocumentService {
         return dtos;
     }
 
-
     @Override
     public Document downloadDocumentById(Long documentId) {
         return documentRepository.findById(documentId).orElseThrow(() -> new DocumentNotFoundException("Document not found"));
@@ -86,7 +83,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public void deleteDocument(Long id) {
         DocumentDto dto = documentRepository.findById(id).map(documentMapper::toDto).orElseThrow(() -> new DocumentNotFoundException("Document not found"));
-        Document entity = documentMapper.toEntity(dto);
-        documentRepository.delete(entity);
+        documentRepository.delete(documentMapper.toEntity(dto));
+
     }
 }

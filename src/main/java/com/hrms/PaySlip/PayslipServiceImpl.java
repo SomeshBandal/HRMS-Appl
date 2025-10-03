@@ -28,16 +28,13 @@ public class PayslipServiceImpl implements PayslipService{
 
     @Override
     public PayslipDto generatePayslip(PayslipDto payslipDto, Long employeeId, MultipartFile file) throws IOException {
-        Employee employee= employeeRepository.findById(employeeId).orElseThrow(()->new EmployeeNotFoundException("Employee not found"));
+        Employee employee= employeeRepository.findById(employeeId)
+                .orElseThrow(()->new EmployeeNotFoundException("Employee not found"));
 
         Payslip payslip = new Payslip();
         payslip.setEmployee(employee);
-        payslip.setSalaryMonth(payslipDto.getSalaryMonth());
-        payslip.setBasic(payslipDto.getBasic());
-        payslip.setHra(payslipDto.getHra());
-        payslip.setDeduction(payslipDto.getDeduction());
-        payslip.setNetSalary(payslipDto.getNetSalary());
         payslip.setPayslipPdf(file.getBytes());
+
 
         Payslip savedPayslip = payslipRepository.save(payslip);
         return payslipMapper.toDto(savedPayslip);
@@ -51,7 +48,7 @@ public class PayslipServiceImpl implements PayslipService{
 
     @Override
     public List<PayslipResponseDto> getAllPayslipsWithDownloadLinks(Long employeeId, String baseUrl) {
-        Long loggedInEmployeeId = SecurityUtil.getLoggedInEmployeeId();
+        Long loggedInEmployeeId = Long.valueOf(SecurityUtil.getLoggedInEmployeeId());
 
         if (!loggedInEmployeeId.equals(employeeId)){
             throw new UnauthorizedPayslipAccessException("You are not allowed to view payslips of other employees");
@@ -64,15 +61,11 @@ public class PayslipServiceImpl implements PayslipService{
         }
 
         return payslips.stream()
-                    .map(p -> {
+                    .map(payslip -> {
                         PayslipResponseDto dto = new PayslipResponseDto();
-                        dto.setId(p.getId());
-                        dto.setBasic(p.getBasic());
-                        dto.setSalaryMonth(p.getSalaryMonth());
-                        dto.setHra(p.getHra());
-                        dto.setNetSalary(p.getNetSalary());
-                        dto.setDeduction(p.getDeduction());
-                        dto.setDownloadUrl(baseUrl + "/api/download/" + p.getId());
+                        dto.setId(payslip.getId());
+                        dto.setSalaryMonth(payslip.getSalaryMonth());
+                        dto.setDownloadUrl(baseUrl + "/api/download/" + payslip.getId());
                         return dto;
                     })
                     .collect(Collectors.toList());

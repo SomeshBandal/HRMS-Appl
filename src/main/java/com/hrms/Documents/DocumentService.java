@@ -15,4 +15,6 @@ public interface DocumentService {
     void deleteDocument(Long id);
 
     Document downloadDocumentById(Long docId);
+
+
 }

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,41 +18,42 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class EmployeeController {
 
-    @Autowired
-    private EmployeeService employeeService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/registerHr")
-    @Operation(summary = "Registration of Hr")
-    public ResponseEntity<ApiResponse<EmployeeDto>> registerHr(@RequestBody EmployeeDto dto) {
-        if (!"HR".equalsIgnoreCase(dto.getRole())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(ApiResponse.error(HttpStatus.FORBIDDEN, "Only HR can be registered via this endpoint.", null));
-        }
-        try{
-            EmployeeDto employeeDto = employeeService.saveEmployee(dto);
-            return ResponseEntity.ok().body(ApiResponse.success("Hr registered successfully", employeeDto));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                    .body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to register Hr", e.getMessage()));
-        }
-    }
+    private final EmployeeService employeeService;
+
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @PostMapping("/registerHr")
+//    @Operation(summary = "Registration of Hr")
+//    public ResponseEntity<ApiResponse<EmployeeDto>> registerHr(@RequestBody EmployeeDto dto) {
+//        if (!"HR".equalsIgnoreCase(dto.getRole())) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+//                    .body(ApiResponse.error(HttpStatus.FORBIDDEN, "Only HR can be registered via this endpoint.", null));
+//        }
+//        try{
+//            EmployeeDto employeeDto = employeeService.saveEmployee(dto);
+//            return ResponseEntity.ok().body(ApiResponse.success("Hr registered successfully", employeeDto));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest()
+//                    .body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to register Hr", e.getMessage()));
+//        }
+//    }
 
 
     @Operation(summary = "Register a new employee")
     @PostMapping("/hr/employee")
     @PreAuthorize("hasRole('HR')")
     public ResponseEntity<ApiResponse<EmployeeDto>> registerEmployee(
-            @Parameter(description = "Employee details required", required = true)
+            @Parameter(description = "Employee details", required = true)
             @Valid @RequestBody EmployeeDto employeeDto) {
 
         try {
             EmployeeDto employeeDto1 = employeeService.saveEmployee(employeeDto);
-            return ResponseEntity.ok(ApiResponse.success("Employee saved successfully", employeeDto1));
+            return ResponseEntity.ok(ApiResponse.success("Employee registered successfully", employeeDto1));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to save Employee", e.getMessage()));
+            return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to register Employee", e.getMessage()));
         }
     }
 
@@ -69,8 +71,7 @@ public class EmployeeController {
 
     @PreAuthorize("hasRole('HR')")
     @GetMapping("/hr/employee/{id}")
-    @Operation(
-            summary = "Fetching single employee" ,
+    @Operation(summary = "Fetching single employee" ,
             description = "Retrieves employee by unique identifier")
 
     public ResponseEntity<ApiResponse<EmployeeDto>>getEmployeeById(
@@ -162,7 +163,7 @@ public class EmployeeController {
     @PreAuthorize("hasRole('EMPLOYEE')")
     @GetMapping("/employee/profile")
     @Operation(summary = "Fetching own profile" ,
-               description = "Retrieves employee details by email and password")
+               description = "Retrieves employee details")
 
     public ResponseEntity<ApiResponse<EmployeeDto>>ownProfile() {
 

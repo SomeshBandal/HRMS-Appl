@@ -1,57 +1,56 @@
 package com.hrms.Security;
 
 import com.hrms.Entity.Employee;
+import com.hrms.Entity.User;
 import lombok.Data;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 @Data
+@RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final Employee employee;
+   private final User user;
 
-
-    public CustomUserDetails(Employee employee) {
-        this.employee = employee;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_"+ employee.getRole()));
+        return  user.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName())).toList();
     }
 
     @Override
     public String getPassword() {
-        return employee.getPassword();
+        return user.getPassword();
     }
-
     @Override
     public String getUsername() {
-        return employee.getEmail();
+        return user.getUsername();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
 }

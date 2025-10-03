@@ -1,8 +1,5 @@
 package com.hrms.Entity.Enum;
 
 public enum Role {
-    HR,
-    EMPLOYEE,
-    MANAGER,
-    ADMIN
+    ROLE_EMPLOYEE, ROLE_HR, ROLE_ADMIN
 }

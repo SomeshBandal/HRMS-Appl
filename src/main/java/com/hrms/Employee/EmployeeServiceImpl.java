@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeMapper employeeMapper;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
 
     @Override
@@ -38,6 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employeeRepository.existsByEmail(employeeDto.getEmail())){
             throw new EmployeeAlreadyExistsException("Employee already exists");
         }
+
         employeeDto.setPassword(passwordEncoder.encode(employeeDto.getPassword()));
 
         Employee entity = employeeMapper.toEntity(employeeDto);
@@ -48,7 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public EmployeeDto getEmployeeById(Long id) {
         return employeeRepository.findById(id).map(employeeMapper::toDto).orElseThrow(
                 () -> new EmployeeNotFoundException("Employee not found with id :" + id));
@@ -56,9 +58,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<EmployeeDto> getAllEmployees() {
-        return employeeRepository.findAll().stream().map(employeeMapper::toDto).collect(Collectors.toList());
+        return employeeRepository.findAll()
+                .stream().map(employeeMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -107,7 +110,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeDto> getActiveEmployees() {
-        return employeeRepository.findByStatus(EmployeeStatus.ACTIVE).stream().map(employeeMapper::toDto).toList();
+        return employeeRepository.findByStatus(EmployeeStatus.ACTIVE)
+                .stream().map(employeeMapper::toDto).toList();
 
     }
 
@@ -117,5 +121,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         String email = authentication.getName();
         Employee employee = employeeRepository.findByEmail(email).orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
         return employeeMapper.toDto(employee);
+
     }
 }

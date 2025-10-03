@@ -12,11 +12,8 @@ import java.time.YearMonth;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Payslip {
-
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private Long id;
-
     private YearMonth salaryMonth;
     private double basic;
     private double hra;

@@ -1,6 +1,6 @@
 package com.hrms.Employee;
 import com.hrms.Entity.Employee;
-import com.hrms.Entity.Enum.Role;
+import com.hrms.Entity.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ public class EmployeeMapper {
         dto.setEmail(employee.getEmail());
         dto.setPassword(employee.getPassword());
         dto.setDepartment(employee.getDepartment());
-        dto.setRole(String.valueOf(employee.getRole()));
+        dto.setRole(employee.getRole());
         dto.setDateOfJoining(employee.getDateOfJoining());
 
         return dto;
@@ -37,7 +37,7 @@ public class EmployeeMapper {
         employee.setEmail(dto.getEmail());
         employee.setPassword(dto.getPassword());
         employee.setDepartment(dto.getDepartment());
-        employee.setRole(Role.valueOf(dto.getRole()));
+        employee.setRole(employee.getRole());
         employee.setDateOfJoining(dto.getDateOfJoining());
 
         return employee;

@@ -1,14 +1,16 @@
 package com.hrms.Entity;
 
 import com.hrms.Entity.Enum.EmployeeStatus;
-import com.hrms.Entity.Enum.Role;
 import jakarta.persistence.*;
+import jdk.jfr.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "employee")
@@ -23,12 +25,10 @@ public class Employee {
     private String name;
     private String email;
     private String department;
+    private Long Mobile;
 
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status = EmployeeStatus.ACTIVE; //default active
-
-    @Enumerated(EnumType.STRING)
-    private Role role; // HR or EMPLOYEE
 
     private LocalDate dateOfJoining;
     private String password; // store hashed
@@ -44,4 +44,9 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<LeaveRequest> leaves;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

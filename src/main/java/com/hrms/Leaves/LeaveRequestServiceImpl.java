@@ -10,10 +10,12 @@ import com.hrms.Entity.LeaveRequest;
 import com.hrms.LeaveBalance.LeaveBalanceNotFoundException;
 import com.hrms.LeaveBalance.LeaveBalanceRepository;
 import com.hrms.LeaveBalance.LeaveBalanceServiceImpl;
+import com.hrms.util.NotificationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +45,8 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     public LeaveRequestDto raiseLeaveRequest(LeaveRequestDto dto) {
 
         int noOfDays = (int) ChronoUnit.DAYS.between(dto.getFromDate(), dto.getToDate()) + 1;
-
+//        LocalDate fromDate = dto.getFromDate();
+//        LocalDate toDate = dto.getToDate();
         // Check if employee has any leave balance records
         List<LeaveBalance> balances = leaveBalanceRepo.findByEmployeeId(dto.getEmployeeId());
         if (balances.isEmpty()) {

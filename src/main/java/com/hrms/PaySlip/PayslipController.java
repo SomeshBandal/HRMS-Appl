@@ -33,8 +33,8 @@ public class PayslipController {
     private final EmployeeService employeeService; // Needed to get employee by userDetails
 
     @PreAuthorize("hasRole('HR')")
-    @PostMapping("hr/payslip/generate/{employeeId}")
-    @Operation(summary = "Generate Payslip",
+    @PostMapping("hr/payslip/upload/{employeeId}")
+    @Operation(summary = "Upload Payslip",
                description = "HR uploads a payslip for an employee")
 
     public ResponseEntity<ApiResponse<PayslipDto>> generatePayslip(
@@ -70,7 +70,6 @@ public class PayslipController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Failed to fetch payslips", e.getMessage()));
         }
-
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
@@ -104,7 +103,7 @@ public class PayslipController {
     public ResponseEntity<Resource> downloadPayslip(@PathVariable Long payslipId) {
         Payslip payslip = payslipService.getPayslipById(payslipId);
 
-        Long loggedInEmployeeId = SecurityUtil.getLoggedInEmployeeId();
+        Integer loggedInEmployeeId = SecurityUtil.getLoggedInEmployeeId();
         if (!payslip.getEmployee().getId().equals(loggedInEmployeeId)) {
             throw new UnauthorizedPayslipAccessException("You cannot download another employee's payslip");
         }

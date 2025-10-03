@@ -15,5 +15,6 @@ public interface EmployeeService {
     void activateEmployee(Long id);
     List<EmployeeDto>getActiveEmployees();
     EmployeeDto ownProfile();
+
 }
 

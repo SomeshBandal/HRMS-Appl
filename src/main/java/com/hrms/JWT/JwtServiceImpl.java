@@ -51,13 +51,18 @@ public class JwtServiceImpl implements JwtService{
         Instant now = Instant.now();
         Instant notBefore = now.plusSeconds(1);
 
-        List<String> roles = customUserDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        List<String> roles = customUserDetails.getAuthorities()
+                .stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        Long userId = customUserDetails.getUser().getId();
+
 
         return Jwts
                 .builder()
                 .setSubject(customUserDetails.getUsername())
                 .setId(UUID.randomUUID().toString())
-                .claim("employeeId",customUserDetails.getEmployee().getId())
+                .claim("userId", userId)
                 .claim("roles", roles)
                 .claim("isEnabled", customUserDetails.isEnabled())
                 .setIssuedAt(Date.from(Instant.now()))

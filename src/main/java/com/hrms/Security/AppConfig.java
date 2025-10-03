@@ -34,15 +34,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             http
-                    .csrf(AbstractHttpConfigurer::disable) // disable CSRF for testing or APIs
+                    .csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/h2-console/**").permitAll() // Allow H2 Console access
-                            .requestMatchers("/api/auth/login").permitAll()
+                            .requestMatchers("/auth/**").permitAll()
                             .anyRequest().authenticated()
                     )             // All other requests require auth
                     .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
             http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                   // .authenticationProvider(authenticationProvider())
+                    .authenticationProvider(authenticationProvider())
                     .httpBasic(Customizer.withDefaults()); // Default login form
 
 
@@ -51,12 +50,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
         @Bean
         public PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder(); // use to hash passwords
+            return new BCryptPasswordEncoder();
         }
 
         @Bean
         public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-            return config.getAuthenticationManager(); // default auth manager using UserDetailsService
+            return config.getAuthenticationManager();
         }
 
         @Bean

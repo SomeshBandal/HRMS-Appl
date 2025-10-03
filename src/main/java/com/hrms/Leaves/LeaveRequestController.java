@@ -28,10 +28,12 @@ public class LeaveRequestController {
             @Parameter(description = "leave request details required", required = true)
             @Valid @RequestBody LeaveRequestDto dto) {
         try {
-            LeaveRequestDto leave = leaveRequestService.raiseLeaveRequest(dto);
-            return ResponseEntity.ok().body(ApiResponse.success("Request saved successfully"));
+            leaveRequestService.raiseLeaveRequest(dto);
+            return ResponseEntity.ok()
+                    .body(ApiResponse.success("Request saved successfully"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Request failed", e.getMessage()));
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Request failed", e.getMessage()));
         }
     }
 
@@ -47,7 +49,7 @@ public class LeaveRequestController {
             @PathVariable @Min(1) Long employeeId) {
         try {
             List<LeaveRequestDto> appliedLeaves = leaveRequestService.viewAppliedLeaves(employeeId);
-            return ResponseEntity.ok().body(ApiResponse.success("applied leaves fetched successfully", appliedLeaves));
+            return ResponseEntity.ok().body(ApiResponse.success("Applied leaves fetched successfully", appliedLeaves));
         } catch (LeavesNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(HttpStatus.NOT_FOUND, "Leaves not found", e.getMessage()));
         } catch (Exception e) {

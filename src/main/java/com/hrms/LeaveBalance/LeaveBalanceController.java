@@ -46,7 +46,7 @@ public class LeaveBalanceController {
             @RequestBody UpdateLeaveBalanceDto dto) {
 
         try {
-            LeaveBalanceDto updated = leaveBalanceService.updateLeaveBalance(id, dto);
+            leaveBalanceService.updateLeaveBalance(id, dto);
             return ResponseEntity.ok().body(ApiResponse.success("Leave balance updated successfully"));
         } catch (LeaveBalanceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

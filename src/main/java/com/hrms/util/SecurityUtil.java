@@ -6,11 +6,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityUtil {
 
-    public static Long getLoggedInEmployeeId() {
+    public static Integer getLoggedInEmployeeId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            return userDetails.getEmployee().getId();
+            return Math.toIntExact(userDetails.getUser().getId());
         }
         throw new RuntimeException("User not authenticated");
     }
